@@ -27,6 +27,7 @@ from reportlab.pdfbase import pdfmetrics
 # 日本語のフォントに使えるフォント
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 
+from PIL import Image, ImageFilter
 
 
 # 実行ファイルと同じディレクトリにあるsample1.pdfをpdf2imageでpngに変換する
@@ -74,6 +75,33 @@ for j in range(len(text_translated)):
     c.showPage()
 c.save()
 
+# pdfを表示用にpngにする（pngファイルはバラバラ）
+path_test = os.path.join(os.path.dirname(__file__), 'test.pdf')
+result_images = convert_from_path(path_test)
+for i in range(len(result_images)):
+    result_images[i].save('result{}.png'.format(i), 'png')
+    imgs = Image.open('result{}.png'.format(i))
+#　結果の画像（pngファイル）を連結させて開く
+def get_concat_v(im1, im2):
+    dst = Image.new('RGB', (im1.width, im1.height + im2.height))
+    dst.paste(im1, (0, 0))
+    dst.paste(im2, (0, im1.height))
+    return dst
+
+if len(result_images) > 2:
+    combined = get_concat_v(Image.open('result0.png'), Image.open('result1.png'))
+    combined.save('combined0.png')
+    for j in range(len(result_images)-2):
+        combined = get_concat_v(Image.open('combined{}.png'.format(j)), Image.open('result{}.png'.format(j+2)))
+        combined.save('combined{}.png'.format(j+1))
+    Image.open('combined{}.png'.format(len(result_images)-2)).show()
+elif len(result_images) == 2:
+    combined = get_concat_v(Image.open('result0.png'), Image.open('result1.png'))
+    combined.save('combined0.png')
+    Image.open('combined0.png').show()
+else:
+    IMage.open('result0.png').show()
 
 if __name__ == "__main__":
     app.run(debug=False)
+    
