@@ -1,5 +1,4 @@
 Flask==1.1.1
-tesserocr==2.5.1
 Pillow==7.0.0
 pdf2image==1.13.1
 pybitflyer==0.1.9
