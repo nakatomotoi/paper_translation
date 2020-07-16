@@ -3,9 +3,9 @@ from flask import Flask
 app = Flask(__name__)
 
 import os
-# OCRを行うtesserocr関連のライブラリをインポート
-import tesserocr
-from tesserocr import PyTessBaseAPI, PSM
+# OCRを行うtesseract関連のライブラリをインポート
+import pyocr
+import pyocr.builders
 # pdfをpngに変えるconvert_from_pathをインポート
 from pdf2image import convert_from_path, convert_from_bytes
 
@@ -18,14 +18,6 @@ import sys
 import json
 import requests
 
-# テキストデータの行を文字数ごとに折り返すライブラリ
-import textwrap
-# テキストデータをpdfに書き出すライブラリ
-from reportlab.pdfgen import canvas
-# pdfデータの編集ライブラリ
-from reportlab.pdfbase import pdfmetrics
-# 日本語のフォントに使えるフォント
-from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 
 from PIL import Image, ImageFilter
 @app.route('/')
@@ -41,10 +33,15 @@ def pdf_translation(filename):
     text_list = ['a'] *len(images)
     text_translated = ['b'] * len(images)
     for i in range(len(images)):
+        tools = pyocr.get_available_tools()
+        tool = tools[0]
         images[i].save('test{}.png'.format(i), 'png')
-        api = PyTessBaseAPI(psm=PSM.AUTO, lang='eng')
-        api.SetImageFile('test{}.png'.format(i))
-        text_list[i] = api.GetUTF8Text()
+        text_list[i] = tool.image_to_string(
+            Image.open(r'test{}.png'.format(i)),
+            lang="eng",
+            builder=pyocr.builders.TextBuilder()
+        )
+    print(text_list)
 
     # config.jsonに格納されているAPIキーを使用可能に
     path_json= os.path.join(os.path.dirname(__file__), "config.json")
@@ -65,6 +62,7 @@ def pdf_translation(filename):
     return text_translated
 
 pdf_translation(filename='sample1.pdf')
+print(pdf_translation(filename='sample1.pdf'))
 
 """
 こんな感じのjsonが格納された配列が生成されている（pagenumberは1からスタート）
