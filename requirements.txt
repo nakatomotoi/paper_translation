@@ -20,7 +20,8 @@ MarkupSafe==1.1.1
 Werkzeug==0.15.2
 Click==7.0
 setuptools==40.3.0
-build-essential
-libleptonica-dev
-libtesseract-dev
-libpython3-dev
+build-essential==12.1
+libleptonica-dev==1.79.0
+libtesseract-dev==3.04.01
+libpython3-dev==3.5.1
+tesserocr==2.5.1
