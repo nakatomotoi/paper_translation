@@ -46,7 +46,7 @@ def pdf_translation(filename):
     # config.jsonに格納されているAPIキーを使用可能に
     path_json= os.path.join(os.path.dirname(__file__), "config.json")
     api = Config(path_json)
-    api_key = api.api_key
+    api_key = os.environ["API_KEY"]
 
     key = "?key=" + api_key
     url = "https://translation.googleapis.com/language/translate/v2"
@@ -72,4 +72,3 @@ print(pdf_translation(filename='sample1.pdf'))
 if __name__ == "__main__":
     
     app.run(host="0.0.0.0",port=int(os.environ.get("PORT",5000)),debug=False)
-    
