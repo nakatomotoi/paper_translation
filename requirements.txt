@@ -20,7 +20,4 @@ MarkupSafe==1.1.1
 Werkzeug==0.15.2
 Click==7.0
 setuptools==40.3.0
-libleptonica-dev
-libtesseract-dev
-libpython3-dev
 tesserocr==2.5.1
