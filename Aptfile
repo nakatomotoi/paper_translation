@@ -13,7 +13,9 @@ libnotify4
 libxss1
 libpng-dev
 libpng12-0
+libpng12.so.0
 libpng12-dev
+libpng12-devel
 libmagickwand-6.q16-2
 libmagickcore-6.q16-2
 libmagickcore-6.q16-2-extra
