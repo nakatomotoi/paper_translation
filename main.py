@@ -41,7 +41,6 @@ def pdf_translation(filename):
             lang="eng",
             builder=pyocr.builders.TextBuilder()
         )
-    print(text_list)
 
     # config.jsonに格納されているAPIキーを使用可能に
     path_json = os.path.join(os.path.dirname(__file__), "config.json")
