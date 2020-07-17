@@ -24,12 +24,13 @@ from PIL import Image, ImageFilter
 def hello():
     return 'Hello Heroku_Flask'
 
-@app.route(‘/translation’)
+
+@app.route('/translation')
 def pdf_translation(filename):
     # 実行ファイルと同じディレクトリにあるsample1.pdfをpdf2imageでpngに変換する
-    #path = os.path.join(os.path.dirname(__file__), filename)
-    #convert_from_bytesを使うようにしました
-    images = convert_from_bytes(open(filename,'rb').read())
+    # path = os.path.join(os.path.dirname(__file__), filename)
+    # convert_from_bytesを使うようにしました
+    images = convert_from_bytes(open(filename, 'rb').read())
     # pngファイルをTesserocrでテキストデータに変換し、text_listに格納
     text_list = ['a'] * len(images)
     text_translated = ['b'] * len(images)
@@ -66,14 +67,13 @@ def pdf_translation(filename):
         else:
             dict_list[i].update(translated_text="このページでは翻訳エラーが発生しました")
 
-
     dict_return = {}
     dict_return.update(data=dict_list)
     return dict_return
 
 
-pdf_translation(filename='sample1.pdf')
-print(pdf_translation(filename='sample1.pdf'))
+# pdf_translation(filename='sample1.pdf')
+# print(pdf_translation(filename='sample1.pdf'))
 
 """
 こんな感じのjsonが格納された配列が生成されている（pagenumberは1からスタート）
