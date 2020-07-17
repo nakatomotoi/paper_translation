@@ -26,11 +26,11 @@ def hello():
 
 
 def pdf_translation(filename):
-# 実行ファイルと同じディレクトリにあるsample1.pdfをpdf2imageでpngに変換する
+    # 実行ファイルと同じディレクトリにあるsample1.pdfをpdf2imageでpngに変換する
     path = os.path.join(os.path.dirname(__file__), filename)
     images = convert_from_path(path)
     # pngファイルをTesserocrでテキストデータに変換し、text_listに格納
-    text_list = ['a'] *len(images)
+    text_list = ['a'] * len(images)
     text_translated = ['b'] * len(images)
     for i in range(len(images)):
         tools = pyocr.get_available_tools()
@@ -44,9 +44,9 @@ def pdf_translation(filename):
     print(text_list)
 
     # config.jsonに格納されているAPIキーを使用可能に
-    path_json= os.path.join(os.path.dirname(__file__), "config.json")
+    path_json = os.path.join(os.path.dirname(__file__), "config.json")
     api = Config(path_json)
-    api_key = os.environ["API_KEY"]
+    api_key = api.api_key if api else os.environ["API_KEY"]
 
     key = "?key=" + api_key
     url = "https://translation.googleapis.com/language/translate/v2"
@@ -61,6 +61,7 @@ def pdf_translation(filename):
         text_translated[i].update(pagenumber=i+1)
     return text_translated
 
+
 pdf_translation(filename='sample1.pdf')
 print(pdf_translation(filename='sample1.pdf'))
 
@@ -71,4 +72,4 @@ print(pdf_translation(filename='sample1.pdf'))
 """
 if __name__ == "__main__":
     
-    app.run(host="0.0.0.0",port=int(os.environ.get("PORT",5000)),debug=False)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
