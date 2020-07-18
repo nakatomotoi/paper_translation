@@ -1,6 +1,7 @@
 # Flaskのインポート
-from flask import Flask, request
+from flask import *
 app = Flask(__name__)
+app.config["JSON_AS_ASCII"] = False
 
 import os
 # OCRを行うtesseract関連のライブラリをインポート
@@ -18,23 +19,30 @@ import sys
 import json
 import requests
 
-
-
+from flask_cors import CORS, cross_origin
 
 from PIL import Image, ImageFilter
+
+CORS(app, support_credentials=True)
 @app.route('/')
 def hello():
     return 'Hello Heroku_Flask'
 
 
 @app.route('/translation', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
 def pdf_translation():
+    print('ここ')
     if request.method == 'POST':
+        print('うんち')
         filename = request.get_data()
+        print(type(filename))
+        print(convert_from_bytes)
         # 実行ファイルと同じディレクトリにあるsample1.pdfをpdf2imageでpngに変換する
         # path = os.path.join(os.path.dirname(__file__), filename)
         # convert_from_bytesを使うようにしました
         images = convert_from_bytes(filename)
+        print(f'images: {images}')
         # pngファイルをTesserocrでテキストデータに変換し、text_listに格納
         text_list = ['a'] * len(images)
         text_translated = ['b'] * len(images)
@@ -57,14 +65,15 @@ def pdf_translation():
         url = "https://translation.googleapis.com/language/translate/v2"
         language = "&source=en&target=ja"
         # google translationでtext_listのテキストデータを日本語へ翻訳し、text_translatedにページごとに格納
-        dict_list= [{'page_number':1}]
+        dict_list = [{'page_number': 1}]
         for i in range(len(images)-1):
-            dict_list.append({'page_number':i+2})
+            dict_list.append({'page_number': i+2})
         for i in range(len(images)):
             q = "&q=" + text_list[i]
             url_a = url + key + q + language
             rr = requests.get(url_a)
             unit_aa = json.loads(rr.text)
+            print(f'unit_aa: {unit_aa}')
             text_translated[i] = unit_aa
             if 'data' in text_translated[i]:
                 dict_list[i].update(translated_text=text_translated[i]['data']['translations'][0]['translatedText'])
@@ -73,11 +82,9 @@ def pdf_translation():
 
         dict_return = {}
         dict_return.update(data=dict_list)
-    return dict_return
+        print(dict_return)
+        return jsonify(dict_return)
 
-
-# pdf_translation(filename='sample1.pdf')
-# print(pdf_translation(filename='sample1.pdf'))
 
 """
 こんな感じのjsonが格納された配列が生成されている（pagenumberは1からスタート）
@@ -86,5 +93,5 @@ def pdf_translation():
 {'data': [{'page_number': int, 'translated_text': string}]}
 """
 if __name__ == "__main__":
-
+    app.debug = True
     app.run(host='0.0.0.0', port=5000)
