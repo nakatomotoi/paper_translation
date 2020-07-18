@@ -32,9 +32,7 @@ def hello():
 @app.route('/translation', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
 def pdf_translation():
-    print('ここ')
     if request.method == 'POST':
-        print('うんち')
         filename = request.get_data()
         print(type(filename))
         print(convert_from_bytes)
