@@ -1,5 +1,5 @@
 Flask==1.1.1
-Pillow==7.0.0
+Pillow==8.3.2
 pdf2image==1.13.1
 pybitflyer==0.1.9
 json5==0.9.1
